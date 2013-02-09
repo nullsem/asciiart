@@ -32,17 +32,30 @@ class ascii_generator:
             self.tonalzones[z]+=self.tonalzones[0]/contr
         self.contrast = contr
 
-    def generate(self):
+    def generate(self, fstream=None):
+
+        if not fstream:
+            import sys
+            fstream=sys.stdout
+
         if self.image.image.mode == '1':
             for y in xrange(self.image.size[1]):
                 for x in xrange(self.image.size[0]):
-                    print ' ' if self.image.image.getpixel((x,y)) else '0'
-                print
+                    fstream.write(' ' if self.image.image.getpixel((x,y)) else '0')
+                    fstream.flush()
+                fstream.write("\n")
+
         elif self.image.image.mode == 'L':
             for y in xrange(self.image.size[1]):
                 for x in xrange(self.image.size[0]):
                     luminosity = 255 - self.image.image.getpixel((x,y))
-                    print self.greyscale[bisect(self.tonalzones, luminosity)],
+                    fstream.write(self.greyscale[bisect(self.tonalzones, luminosity)])
+                    fstream.flush()
+                fstream.write("\n")
+        elif self.image.image.mode == 'RGB':
+            for y in xrange(self.image.size[1]):
+                for x in xrange(self.image.size[0]):
+                    print self.image.image.getpixel((x,y))
                 print
 
 if __name__=='__main__':

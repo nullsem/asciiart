@@ -29,7 +29,10 @@ class image:
         # That is ratio=min(max.width/image.width, max.height/image.height). For ascii
         # art, 1000x1000 images are just enough. But you can change these values
         # according to the screen used and whatnot.
-        self.max_size=50.0, 50.0
+        self.max_size=100.0, 100.0
+
+        if not path:
+            return
 
         # image object from PIL library.
         self.load(self.path)
@@ -54,7 +57,7 @@ class image:
         # calculate image aspect ratio
         self.aspect_ratio = min(self.max_size[0] / float(self.size[0]), self.max_size[1] / float(self.size[1]))
 
-    def __resize(self, size=None):
+    def __resize(self,size=None):
         '''
         Resizes the loaded image. If a size is provided, then it uses the Image.resize() method.
         Else, it uses the Image.thumbnail() method and it tries to preserve the image's aspect
@@ -70,15 +73,15 @@ class image:
             - True: if resize() was successful
             - False: in case of Error
         '''
-        # if not size, that means preserve aspect ratio.
-        if not size:
-            try:
-                self.image.thumbnail((int(self.size[0]*self.aspect_ratio), int(self.size[1]*self.aspect_ratio)), Image.ANTIALIAS)
-            except IOError:
-                print 'Error: Could not preserve image aspect ratio. Please specify a sampling size.'
-                return False
-        else:
-             self.image = self.image.resize(size, Image.ANTIALIAS)
+        if size:
+            self.max_size = size
+            self.__calculate_aspect_ratio()
+
+        try:
+            self.image.thumbnail((int(self.size[0]*self.aspect_ratio), int(self.size[1]*self.aspect_ratio)), Image.ANTIALIAS)
+        except IOError:
+            print 'Error: Could not preserve image aspect ratio. Please specify a sampling size.'
+            return False
 
         self.size = self.image.size
 
