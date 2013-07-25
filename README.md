@@ -1,4 +1,6 @@
 asciiart
 ========
 
-This will ultimately be a tool to create optimized ascii art from random images.
+This is a simple utility to generate ascii art from images. 
+
+It currently only supports modes '1' and 'L'.
